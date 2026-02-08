@@ -1,5 +1,5 @@
 // Static chord progression data
-export const progressions = [
+const progressions = [
   {
     id: "blues-12bar",
     genreTags: ["blues"],

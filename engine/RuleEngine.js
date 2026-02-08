@@ -7,7 +7,7 @@
  * @param {Array} allRules - All available rules
  * @returns {Array} Filtered rules
  */
-export function getActiveRules(selection, allRules) {
+function getActiveRules(selection, allRules) {
   return allRules.filter(rule => {
     // Match part
     if (rule.part !== selection.part) return false;
@@ -28,7 +28,7 @@ export function getActiveRules(selection, allRules) {
  * @param {Array} rules - Active rules
  * @returns {Object} Organized rules by role
  */
-export function resolveConflicts(rules) {
+function resolveConflicts(rules) {
   const organized = {
     constraints: [],
     anchors: [],
@@ -82,7 +82,7 @@ function findAnchorConflicts(anchors) {
  * @param {string} previousChord - Previous chord symbol (null if first bar)
  * @returns {Object} Rules applicable to this context
  */
-export function getRulesForContext(organizedRules, bar, beat, currentChord, previousChord) {
+function getRulesForContext(organizedRules, bar, beat, currentChord, previousChord) {
   const applicable = {
     constraints: [],
     anchors: [],

@@ -140,6 +140,13 @@
         </main>
     </div>
 
-    <script type="module" src="app.js"></script>
+    <!-- Load scripts in dependency order -->
+    <script src="engine/RuleEngine.js"></script>
+    <script src="engine/BassGenerator.js"></script>
+    <script src="data/progressions.js"></script>
+    <script src="data/scales.js"></script>
+    <script src="data/rules.js"></script>
+    <script src="data/licks.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

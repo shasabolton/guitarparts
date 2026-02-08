@@ -75,7 +75,7 @@ guitarparts/
 
 ## Notes
 
-- This is a client-side only application (no server required)
-- Uses ES6 modules (requires a web server or opening via file:// may have CORS issues)
-- For best results, serve via a local web server (e.g., `python -m http.server` or VS Code Live Server)
+- This is a client-side only application (no backend server required)
+- Works with regular script tags (no ES6 modules) - can be opened directly via file:// protocol
+- Also works on GitHub Pages, local web servers, or any static file hosting
 

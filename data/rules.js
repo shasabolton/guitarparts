@@ -1,7 +1,7 @@
 // Static rule data
 // Rules are atomic, single-slot, declarative behaviors
 
-export const rules = [
+const rules = [
   // Bass rules for Blues
   {
     id: "bass-blues-anchor-beat1",
@@ -15,6 +15,17 @@ export const rules = [
     action: "play root of current chord"
   },
   {
+    id: "bass-blues-anchor-beat3",
+    part: "bass",
+    genreTags: ["blues"],
+    minLevel: 1,
+    maxLevel: Infinity,
+    role: "anchor",
+    affectsSlot: "targetTone",
+    trigger: "beat3",
+    action: "play fifth of current chord",
+  },
+  {
     id: "bass-blues-preference-beat3",
     part: "bass",
     genreTags: ["blues"],
@@ -23,8 +34,8 @@ export const rules = [
     role: "preference",
     affectsSlot: "targetTone",
     trigger: "beat3",
-    action: "prefer 5th or root",
-    weight: 0.7
+    action: "play fifth or root",
+    weight: 0.5
   },
   {
     id: "bass-blues-constraint-rhythm",

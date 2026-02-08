@@ -1,8 +1,6 @@
 // BassGenerator: Generates bass note events per bar
 // Applies anchor → preference → embellishment logic
 
-import { getActiveRules, resolveConflicts, getRulesForContext } from './RuleEngine.js';
-
 /**
  * Convert chord symbol to scale degree
  * @param {string} chordSymbol - e.g., "I7", "IV7", "V7", "vi", "IV"
@@ -56,6 +54,10 @@ function applyAnchors(anchorRules, currentChord) {
     if (rule.affectsSlot === 'targetTone') {
       if (rule.action.includes('root')) {
         return chordSymbolToRootDegree(currentChord);
+      }
+      if (rule.action.includes('fifth') || rule.action.includes('5th')) {
+        const root = chordSymbolToRootDegree(currentChord);
+        return getFifthDegree(root);
       }
     }
   }
@@ -120,7 +122,7 @@ function applyPreferences(preferenceRules, anchorTone, currentChord, randomness)
  * @param {Array} allRules - All available rules
  * @returns {Array} Array of NoteEvent objects
  */
-export function generateBassLine(selection, progression, allRules) {
+function generateBassLine(selection, progression, allRules) {
   // Get active rules
   const activeRules = getActiveRules(selection, allRules);
   const organizedRules = resolveConflicts(activeRules);

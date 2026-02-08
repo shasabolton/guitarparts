@@ -1,7 +1,7 @@
 // Static lick data
 // Licks are musical ideas that can be selected and transformed
 
-export const licks = [
+const licks = [
   {
     id: "blues-l1-lick1",
     genreTags: ["blues"],

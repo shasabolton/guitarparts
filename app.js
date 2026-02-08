@@ -1,11 +1,6 @@
 // Main application logic
 // Loads static data and generates bass/lead lines with rule toggling
-
-import { progressions } from './data/progressions.js';
-import { scales } from './data/scales.js';
-import { rules } from './data/rules.js';
-import { licks } from './data/licks.js';
-import { generateBassLine } from './engine/BassGenerator.js';
+// Note: This file depends on RuleEngine, BassGenerator, and data files being loaded first
 
 // Application state
 let appState = {

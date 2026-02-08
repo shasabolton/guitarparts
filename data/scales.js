@@ -1,5 +1,5 @@
 // Static scale data
-export const scales = [
+const scales = [
   {
     id: "minor-pentatonic",
     degrees: ["1", "b3", "4", "5", "b7"]
