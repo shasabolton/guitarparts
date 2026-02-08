@@ -16,7 +16,8 @@ export function getActiveRules(selection, allRules) {
     if (!rule.genreTags.includes(selection.genre)) return false;
     
     // Match level
-    if (selection.level < rule.minLevel || selection.level > rule.maxLevel) return false;
+    if (selection.level < rule.minLevel) return false;
+    if (rule.maxLevel !== Infinity && selection.level > rule.maxLevel) return false;
     
     return true;
   });
