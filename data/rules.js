@@ -1,0 +1,116 @@
+// Static rule data
+// Rules are atomic, single-slot, declarative behaviors
+
+export const rules = [
+  // Bass rules for Blues Level 1
+  {
+    id: "bass-blues-l1-anchor-beat1",
+    part: "bass",
+    genreTags: ["blues"],
+    minLevel: 1,
+    maxLevel: 1,
+    role: "anchor",
+    affectsSlot: "targetTone",
+    trigger: "beat1",
+    action: "play root of current chord"
+  },
+  {
+    id: "bass-blues-l1-preference-beat3",
+    part: "bass",
+    genreTags: ["blues"],
+    minLevel: 1,
+    maxLevel: 1,
+    role: "preference",
+    affectsSlot: "targetTone",
+    trigger: "beat3",
+    action: "prefer 5th or root",
+    weight: 0.7
+  },
+  {
+    id: "bass-blues-l1-constraint-rhythm",
+    part: "bass",
+    genreTags: ["blues"],
+    minLevel: 1,
+    maxLevel: 1,
+    role: "constraint",
+    affectsSlot: "rhythm",
+    trigger: "always",
+    action: "quarter notes only"
+  },
+  
+  // Bass rules for Blues Level 2
+  {
+    id: "bass-blues-l2-anchor-beat1",
+    part: "bass",
+    genreTags: ["blues"],
+    minLevel: 2,
+    maxLevel: 2,
+    role: "anchor",
+    affectsSlot: "targetTone",
+    trigger: "beat1",
+    action: "play root of current chord"
+  },
+  {
+    id: "bass-blues-l2-embellishment-walk",
+    part: "bass",
+    genreTags: ["blues"],
+    minLevel: 2,
+    maxLevel: 2,
+    role: "embellishment",
+    affectsSlot: "motion",
+    trigger: "chord change",
+    action: "allow walking bass line",
+    weight: 0.5
+  },
+  
+  // Bass rules for Pop Level 1
+  {
+    id: "bass-pop-l1-anchor-beat1",
+    part: "bass",
+    genreTags: ["pop"],
+    minLevel: 1,
+    maxLevel: 1,
+    role: "anchor",
+    affectsSlot: "targetTone",
+    trigger: "beat1",
+    action: "play root of current chord"
+  },
+  {
+    id: "bass-pop-l1-preference-beat3",
+    part: "bass",
+    genreTags: ["pop"],
+    minLevel: 1,
+    maxLevel: 1,
+    role: "preference",
+    affectsSlot: "targetTone",
+    trigger: "beat3",
+    action: "prefer 5th",
+    weight: 0.8
+  },
+  
+  // Lead rules for Blues Level 1
+  {
+    id: "lead-blues-l1-constraint-scale",
+    part: "lead",
+    genreTags: ["blues"],
+    minLevel: 1,
+    maxLevel: 1,
+    role: "constraint",
+    affectsSlot: "targetTone",
+    trigger: "always",
+    action: "use minor pentatonic scale"
+  },
+  {
+    id: "lead-blues-l1-preference-resolution",
+    part: "lead",
+    genreTags: ["blues"],
+    minLevel: 1,
+    maxLevel: 1,
+    role: "preference",
+    affectsSlot: "targetTone",
+    trigger: "chord change",
+    action: "prefer chord tones",
+    weight: 0.6
+  }
+];
+

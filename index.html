@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Looping & Improv Learning App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Guitar Looping & Improv Learning App</h1>
+        </header>
+
+        <main>
+            <section class="controls">
+                <div class="control-group">
+                    <label for="genre">Genre:</label>
+                    <select id="genre">
+                        <option value="">Select Genre</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="level">Complexity Level:</label>
+                    <select id="level">
+                        <option value="">Select Level</option>
+                        <option value="1">Level 1</option>
+                        <option value="2">Level 2</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="progression">Chord Progression:</label>
+                    <select id="progression">
+                        <option value="">Select Progression</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="rootString">Root String:</label>
+                    <select id="rootString">
+                        <option value="">Select Root String</option>
+                        <option value="6">6th String</option>
+                        <option value="5">5th String</option>
+                        <option value="4">4th String</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="randomness">Randomness / Variation:</label>
+                    <input type="range" id="randomness" min="0" max="100" value="50">
+                    <span id="randomnessValue">50</span>
+                </div>
+
+                <div class="control-group">
+                    <button id="generateBass">Generate Bass Line</button>
+                    <button id="generateLead">Generate Lead Line</button>
+                </div>
+            </section>
+
+            <section class="output">
+                <h2>Output</h2>
+                <div id="outputArea">
+                    <p>Select options and generate a bass or lead line. Check the browser console for detailed output.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
+
