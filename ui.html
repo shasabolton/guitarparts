@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parametric Riff Timeline - UI</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        h1 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #ccc;
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+
+        /* Setup Section */
+        .setup-section {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .setup-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .setup-row label {
+            min-width: 120px;
+            font-weight: 500;
+        }
+
+        select, input {
+            padding: 8px 12px;
+            background: #3a3a3a;
+            border: 1px solid #4a4a4a;
+            border-radius: 4px;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #6a6a6a;
+        }
+
+        button {
+            padding: 8px 16px;
+            background: #4a4a4a;
+            border: 1px solid #5a5a5a;
+            border-radius: 4px;
+            color: #e0e0e0;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #5a5a5a;
+        }
+
+        button:active {
+            background: #3a3a3a;
+        }
+
+        /* Rule Slot Grid */
+        .grid-section {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        #rule-slot-grid {
+            display: inline-block;
+            min-width: 100%;
+        }
+
+        .grid-row {
+            display: flex;
+            border-bottom: 1px solid #3a3a3a;
+        }
+
+        .grid-row.muted {
+            opacity: 0.5;
+        }
+
+        .grid-row:last-child {
+            border-bottom: none;
+        }
+
+        .grid-cell {
+            padding: 12px;
+            border-right: 1px solid #3a3a3a;
+            flex: 0 0 auto;
+            text-align: center;
+        }
+
+        .grid-cell:last-child {
+            border-right: none;
+        }
+
+        .grid-header {
+            background: #333;
+            font-weight: 600;
+        }
+
+        .grid-header-cell {
+            background: #333;
+            white-space: pre-line;
+            width: 120px;
+        }
+
+        .part-name-cell {
+            background: #2a2a2a;
+            text-align: left;
+            font-weight: 500;
+            width: 150px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .part-name-display {
+            flex: 1;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .part-name-display:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .mute-btn {
+            font-size: 16px;
+        }
+
+        .rule-slot-cell {
+            width: 120px;
+        }
+
+        .part-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .icon-btn {
+            padding: 4px 8px;
+            min-width: auto;
+            font-size: 12px;
+        }
+
+        .rule-slot-cell {
+            cursor: pointer;
+            transition: background 0.2s;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 25px;
+            position: relative;
+        }
+
+        .rule-slot-cell:hover {
+            background: #3a3a3a;
+        }
+
+        .rule-slot-cell.has-rule {
+            background: #2d4a2d;
+        }
+
+        .rule-slot-cell.no-rule {
+            color: #666;
+        }
+
+        .add-part-row {
+            border-top: 2px solid #4a4a4a;
+        }
+
+        .add-part-cell {
+            cursor: pointer;
+            font-size: 24px;
+            font-weight: bold;
+            color: #888;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .add-part-cell:hover {
+            background: #3a3a3a;
+            color: #fff;
+        }
+
+        /* Note Events */
+        .note-events-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .note-event-bar {
+            position: absolute;
+            bottom: 0;
+            height: 16px;
+            background: #4a6a4a;
+            border: 1px solid #5a8a5a;
+            border-radius: 2px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            overflow: hidden;
+            white-space: nowrap;
+            min-width: 20px;
+        }
+
+        .rule-slot-cell {
+            position: relative;
+        }
+
+        /* Dialogs */
+        #rule-dialog, #part-edit-dialog {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dialog-content {
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .dialog-header h2 {
+            margin: 0;
+        }
+
+        .dialog-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .dialog-close:hover {
+            color: #fff;
+        }
+
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .filter-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .filter-section input {
+            width: 100%;
+        }
+
+        #rule-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid #3a3a3a;
+            border-radius: 4px;
+        }
+
+        .rule-list-item {
+            padding: 12px;
+            border-bottom: 1px solid #3a3a3a;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .rule-list-item:last-child {
+            border-bottom: none;
+        }
+
+        .rule-list-item:hover {
+            background: #3a3a3a;
+        }
+
+        .rule-list-item.selected {
+            background: #2d4a2d;
+        }
+
+        .rule-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .rule-description {
+            font-size: 0.9em;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        .rule-tags {
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .register-section {
+            margin-bottom: 20px;
+        }
+
+        .register-section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .register-section select {
+            width: 100%;
+        }
+
+        .dialog-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .dialog-actions button {
+            min-width: 100px;
+        }
+
+        /* Output Display */
+        .output-section {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        #output-display {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Parametric Riff Timeline</h1>
+    <p>Stage 4: UI Skeleton</p>
+
+    <!-- Setup Section -->
+    <div class="setup-section">
+        <h2>Setup</h2>
+        <div class="setup-row">
+            <label for="progression-selector">Progression:</label>
+            <select id="progression-selector"></select>
+        </div>
+    </div>
+
+    <!-- Rule Slot Grid -->
+    <div class="grid-section">
+        <h2>Timeline</h2>
+        <div id="rule-slot-grid"></div>
+    </div>
+
+    <!-- Part Edit Dialog -->
+    <div id="part-edit-dialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h2>Edit Part</h2>
+                <button class="dialog-close" id="part-edit-dialog-close">×</button>
+            </div>
+
+            <div class="filter-section">
+                <label for="part-edit-name">Part Name:</label>
+                <input type="text" id="part-edit-name" placeholder="e.g., Bass, Lead">
+            </div>
+
+            <div class="register-section">
+                <label for="part-edit-register">Default Register:</label>
+                <select id="part-edit-register">
+                    <option value="low">Low</option>
+                    <option value="mid" selected>Mid</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <div class="dialog-actions">
+                <button id="part-edit-save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Part Edit Dialog -->
+    <div id="part-edit-dialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h2>Edit Part</h2>
+                <button class="dialog-close" id="part-edit-dialog-close">×</button>
+            </div>
+
+            <div class="filter-section">
+                <label for="part-edit-name">Part Name:</label>
+                <input type="text" id="part-edit-name" placeholder="e.g., Bass, Lead">
+            </div>
+
+            <div class="register-section">
+                <label for="part-edit-register">Default Register:</label>
+                <select id="part-edit-register">
+                    <option value="low">Low</option>
+                    <option value="mid" selected>Mid</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <div class="dialog-actions">
+                <button id="part-edit-save">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rule Dialog -->
+    <div id="rule-dialog">
+        <div class="dialog-content">
+            <div class="dialog-header">
+                <h2>Select Rule</h2>
+                <button class="dialog-close" id="rule-dialog-close">×</button>
+            </div>
+
+            <div class="filter-section">
+                <label for="rule-filter-tags">Filter by tags:</label>
+                <input type="text" id="rule-filter-tags" placeholder="e.g., bass, beginner">
+            </div>
+
+            <div id="rule-list"></div>
+
+            <div id="rule-parameters-section" style="display: none;">
+                <h3>Walk Parameters</h3>
+                <div id="walk-parameters-container"></div>
+            </div>
+
+            <div class="register-section">
+                <label for="rule-register-select">Register Override:</label>
+                <select id="rule-register-select">
+                    <option value="default">Use Part Default</option>
+                    <option value="low">Low</option>
+                    <option value="mid">Mid</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <div class="dialog-actions">
+                <button id="rule-dialog-apply-all">Apply to All (Global)</button>
+                <button id="rule-dialog-apply">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Output Display -->
+    <div class="output-section">
+        <h2>Resolved Note Events</h2>
+        <div id="output-display"></div>
+    </div>
+
+    <script src="data/progressiojns.js"></script>
+    <script src="data/rules.js"></script>
+    <script src="data/riffs.js"></script>
+    <script src="engine.js"></script>
+    <script src="walk-resolver.js"></script>
+    <script src="note-events-renderer.js"></script>
+    <script src="ui.js"></script>
+    <script>
+        // Initialize UI when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initUI);
+        } else {
+            initUI();
+        }
+    </script>
+</body>
+</html>
+

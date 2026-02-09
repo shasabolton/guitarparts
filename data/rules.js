@@ -1,114 +1,146 @@
-// Static rule data
-// Rules are atomic, single-slot, declarative behaviors
+const RULES = {
+  default_root_hold: {
+    id: "default_root_hold",
+    name: "Chord Root Hold",
+    description: "Hold the chord root for the full bar.",
+    riffId: "chord_root_hold",
+    tags: ["basic", "foundation"],
+    defaultRegister: "low"
+  },
 
-const rules = [
-  // Bass rules for Blues
-  {
-    id: "bass-blues-anchor-beat1",
-    part: "bass",
-    genreTags: ["blues"],
-    minLevel: 1,
-    maxLevel: Infinity,
-    role: "anchor",
-    affectsSlot: "targetTone",
-    trigger: "beat1",
-    action: "play root of current chord"
+  oom_pah_rule: {
+    id: "oom_pah_rule",
+    name: "Oom-Pah (Root–Fifth)",
+    description: "Play root on beat 1 and fifth on beat 3.",
+    riffId: "oom_pah_I_V",
+    tags: ["bass", "groove", "beginner"],
+    defaultRegister: "low"
   },
-  {
-    id: "bass-blues-anchor-beat3",
-    part: "bass",
-    genreTags: ["blues"],
-    minLevel: 1,
-    maxLevel: Infinity,
-    role: "anchor",
-    affectsSlot: "targetTone",
-    trigger: "beat3",
-    action: "play fifth of current chord",
-  },
-  {
-    id: "bass-blues-preference-beat3",
-    part: "bass",
-    genreTags: ["blues"],
-    minLevel: 1,
-    maxLevel: Infinity,
-    role: "preference",
-    affectsSlot: "targetTone",
-    trigger: "beat3",
-    action: "play fifth or root",
-    weight: 0.5
-  },
-  {
-    id: "bass-blues-constraint-rhythm",
-    part: "bass",
-    genreTags: ["blues"],
-    minLevel: 1,
-    maxLevel: Infinity,
-    role: "constraint",
-    affectsSlot: "rhythm",
-    trigger: "always",
-    action: "quarter notes only"
-  },
-  {
-    id: "bass-blues-embellishment-walk",
-    part: "bass",
-    genreTags: ["blues"],
-    minLevel: 2,
-    maxLevel: Infinity,
-    role: "embellishment",
-    affectsSlot: "motion",
-    trigger: "chord change",
-    action: "allow walking bass line",
-    weight: 0.5
-  },
-  
-  // Bass rules for Pop
-  {
-    id: "bass-pop-anchor-beat1",
-    part: "bass",
-    genreTags: ["pop"],
-    minLevel: 1,
-    maxLevel: Infinity,
-    role: "anchor",
-    affectsSlot: "targetTone",
-    trigger: "beat1",
-    action: "play root of current chord"
-  },
-  {
-    id: "bass-pop-preference-beat3",
-    part: "bass",
-    genreTags: ["pop"],
-    minLevel: 1,
-    maxLevel: Infinity,
-    role: "preference",
-    affectsSlot: "targetTone",
-    trigger: "beat3",
-    action: "prefer 5th",
-    weight: 0.8
-  },
-  
-  // Lead rules for Blues
-  {
-    id: "lead-blues-constraint-scale",
-    part: "lead",
-    genreTags: ["blues"],
-    minLevel: 1,
-    maxLevel: Infinity,
-    role: "constraint",
-    affectsSlot: "targetTone",
-    trigger: "always",
-    action: "use minor pentatonic scale"
-  },
-  {
-    id: "lead-blues-preference-resolution",
-    part: "lead",
-    genreTags: ["blues"],
-    minLevel: 1,
-    maxLevel: Infinity,
-    role: "preference",
-    affectsSlot: "targetTone",
-    trigger: "chord change",
-    action: "prefer chord tones",
-    weight: 0.6
+
+  walk_to_target: {
+    id: "walk_to_target",
+    type: "rule",
+    category: "walk",
+    name: "Walk to Target Chord",
+    description: "Connects a starting harmonic anchor to a target anchor using a fixed number of steps with deterministic resolution.",
+    teachingSummary: "A walk moves stepwise from the current chord into the next chord using approach tones to create strong resolution.",
+    riffId: null, // Walk rules are resolved dynamically
+    tags: ["walk", "transition", "bass", "intermediate"],
+    defaultRegister: "low",
+    
+    applicableTo: {
+      partType: "any",
+      timingScope: "bar"
+    },
+
+    parameters: {
+      target: {
+        type: "enum",
+        values: ["nextChordRoot", "currentChordRoot"],
+        default: "nextChordRoot",
+        description: "Which harmonic anchor the walk resolves to."
+      },
+
+      steps: {
+        type: "integer",
+        min: 1,
+        max: 5,
+        default: 3,
+        description: "Number of non-anchor notes used between start and target."
+      },
+
+      direction: {
+        type: "enum",
+        values: ["auto", "up", "down"],
+        default: "auto",
+        description: "Direction of motion. Auto chooses the smallest interval."
+      },
+
+      approachStrategy: {
+        type: "enum",
+        values: ["chromatic", "diatonic", "mixed"],
+        default: "mixed",
+        description: "How approach tones are selected near the target."
+      },
+
+      register: {
+        type: "enum",
+        values: ["low", "mid", "high", "inherit"],
+        default: "inherit",
+        description: "String/register preference for note placement."
+      },
+
+      genreProfile: {
+        type: "enum",
+        values: ["blues", "pop", "jazz", "custom"],
+        default: "blues",
+        description: "Genre-specific decision preferences applied during resolution."
+      }
+    },
+
+    genreProfiles: {
+      blues: {
+        preferredApproach: "chromatic",
+        preferFlat7: true,
+        maxDiatonicLeap: 2,
+        description: "Chromatic motion with strong semitone approaches."
+      },
+      pop: {
+        preferredApproach: "diatonic",
+        preferScaleSteps: true,
+        maxDiatonicLeap: 3,
+        description: "Mostly diatonic motion with minimal chromaticism."
+      },
+      jazz: {
+        preferredApproach: "chromatic",
+        allowEnclosures: true,
+        maxDiatonicLeap: 2,
+        description: "Chromatic approaches and decorative motion."
+      },
+      custom: {
+        preferredApproach: "mixed",
+        description: "No stylistic bias."
+      }
+    },
+
+    timelineTemplate: {
+      lengthBeats: 4,
+      events: [
+        {
+          beat: 1,
+          role: "startAnchor",
+          noteSource: "currentChordRoot"
+        },
+        {
+          beat: 2,
+          role: "walkStep",
+          stepIndex: 1
+        },
+        {
+          beat: 3,
+          role: "walkStep",
+          stepIndex: 2
+        },
+        {
+          beat: 4,
+          role: "approachTone"
+        },
+        {
+          beat: 1,
+          barOffset: 1,
+          role: "targetAnchor",
+          noteSource: "targetChordRoot"
+        }
+      ]
+    },
+
+    resolutionRules: {
+      approachTone: {
+        up: "semitoneBelowTarget",
+        down: "semitoneAboveTarget"
+      },
+      stepDistribution: "even",
+      guaranteeResolution: true
+    }
   }
-];
-
+};

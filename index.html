@@ -3,150 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guitar Looping & Improv Learning App</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Parametric Riff Timeline Engine</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        #output {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Guitar Looping & Improv Learning App</h1>
-        </header>
+    <h1>Parametric Riff Timeline Engine</h1>
+    <p>Stage 1 & 2: Core Engine + Pitch Resolver</p>
+    <div id="output"></div>
 
-        <main>
-            <section class="global-controls">
-                <div class="control-group">
-                    <label for="genre">Genre:</label>
-                    <select id="genre">
-                        <option value="">Select Genre</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label for="progression">Chord Progression:</label>
-                    <select id="progression">
-                        <option value="">Select Progression</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label for="rootString">Root String:</label>
-                    <select id="rootString">
-                        <option value="">Select Root String</option>
-                        <option value="6">6th String</option>
-                        <option value="5">5th String</option>
-                        <option value="4">4th String</option>
-                    </select>
-                </div>
-
-                <div class="control-group">
-                    <label for="randomness">Randomness / Variation:</label>
-                    <input type="range" id="randomness" min="0" max="100" value="50">
-                    <span id="randomnessValue">50</span>
-                </div>
-            </section>
-
-            <section class="part-sections">
-                <!-- Chords Section -->
-                <div class="part-section" id="chordsSection">
-                    <h2>Chords</h2>
-                    <div class="part-controls">
-                        <div class="control-group">
-                            <label for="chordsLevel">Level:</label>
-                            <select id="chordsLevel">
-                                <option value="">Select Level</option>
-                                <option value="1">Level 1</option>
-                                <option value="2">Level 2</option>
-                            </select>
-                        </div>
-                        <div class="rules-container">
-                            <div class="rules-header">
-                                <label>
-                                    <input type="checkbox" id="chordsSelectAll" class="select-all">
-                                    Select All Rules
-                                </label>
-                            </div>
-                            <div id="chordsRules" class="rules-list">
-                                <p class="no-rules">Select genre and level to see rules</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bass Section -->
-                <div class="part-section" id="bassSection">
-                    <h2>Bass</h2>
-                    <div class="part-controls">
-                        <div class="control-group">
-                            <label for="bassLevel">Level:</label>
-                            <select id="bassLevel">
-                                <option value="">Select Level</option>
-                                <option value="1">Level 1</option>
-                                <option value="2">Level 2</option>
-                            </select>
-                        </div>
-                        <div class="rules-container">
-                            <div class="rules-header">
-                                <label>
-                                    <input type="checkbox" id="bassSelectAll" class="select-all">
-                                    Select All Rules
-                                </label>
-                            </div>
-                            <div id="bassRules" class="rules-list">
-                                <p class="no-rules">Select genre and level to see rules</p>
-                            </div>
-                        </div>
-                        <div class="generate-button">
-                            <button id="generateBass">Generate Bass Line</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Lead Section -->
-                <div class="part-section" id="leadSection">
-                    <h2>Lead</h2>
-                    <div class="part-controls">
-                        <div class="control-group">
-                            <label for="leadLevel">Level:</label>
-                            <select id="leadLevel">
-                                <option value="">Select Level</option>
-                                <option value="1">Level 1</option>
-                                <option value="2">Level 2</option>
-                            </select>
-                        </div>
-                        <div class="rules-container">
-                            <div class="rules-header">
-                                <label>
-                                    <input type="checkbox" id="leadSelectAll" class="select-all">
-                                    Select All Rules
-                                </label>
-                            </div>
-                            <div id="leadRules" class="rules-list">
-                                <p class="no-rules">Select genre and level to see rules</p>
-                            </div>
-                        </div>
-                        <div class="generate-button">
-                            <button id="generateLead">Generate Lead Line</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="output">
-                <h2>Output</h2>
-                <div id="outputArea">
-                    <p>Select options and generate a bass or lead line. Check the browser console for detailed output.</p>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Load scripts in dependency order -->
-    <script src="engine/RuleEngine.js"></script>
-    <script src="engine/BassGenerator.js"></script>
-    <script src="data/progressions.js"></script>
-    <script src="data/scales.js"></script>
+    <script src="data/progressiojns.js"></script>
     <script src="data/rules.js"></script>
-    <script src="data/licks.js"></script>
-    <script src="app.js"></script>
+    <script src="data/riffs.js"></script>
+    <script src="engine.js"></script>
+    <script>
+        // Display output in page
+        document.getElementById('output').textContent = textOutput;
+    </script>
 </body>
 </html>
