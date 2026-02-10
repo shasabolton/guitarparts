@@ -6,6 +6,7 @@
 function resolveWalkRule(walkRule, parameters, context) {
   const { timeline, currentChordIndex, nextChordIndex, currentBeat } = context;
   
+  
   // Get genre profile
   const genreProfile = walkRule.genreProfiles[parameters.genreProfile] || walkRule.genreProfiles.custom;
   
@@ -17,7 +18,8 @@ function resolveWalkRule(walkRule, parameters, context) {
   const targetAnchor = parameters.target === "nextChordRoot"
     ? getChordRoot(nextChordIndex, timeline)
     : getChordRoot(currentChordIndex, timeline);
-  
+
+
   // Calculate direction
   let direction = parameters.direction;
   if (direction === "auto") {
@@ -26,6 +28,7 @@ function resolveWalkRule(walkRule, parameters, context) {
     const upDistance = (targetSemitones - startSemitones + 12) % 12;
     const downDistance = (startSemitones - targetSemitones + 12) % 12;
     direction = upDistance <= downDistance ? "up" : "down";
+ 
   }
   
   // Generate walk steps
@@ -39,14 +42,16 @@ function resolveWalkRule(walkRule, parameters, context) {
     parameters.approachStrategy,
     timeline
   );
+  console.log("walkNotes", walkNotes);
   
   // Create events from timeline template
   const events = [];
   let eventIndex = 0;
   
   for (const templateEvent of walkRule.timelineTemplate.events) {
+    console.log("templateEvent", templateEvent);
     const beat = templateEvent.barOffset 
-      ? currentBeat + (templateEvent.barOffset - 1) * 4 + templateEvent.beat - 1
+      ? currentBeat + templateEvent.barOffset * 4 + templateEvent.beat - 1
       : currentBeat + templateEvent.beat - 1;
     
     let noteDegree;
@@ -80,7 +85,6 @@ function resolveWalkRule(walkRule, parameters, context) {
     
     // Convert degree to pitch reference
     const pitchRef = degreeToPitchRef(noteDegree, templateEvent.noteSource, context);
-    
     events.push({
       startBeat: beat,
       duration: 1, // Each step is 1 beat
@@ -107,8 +111,10 @@ function getChordRoot(chordIndex, timeline) {
 }
 
 function generateWalkSteps(startDegree, targetDegree, numSteps, direction, genreProfile, approachStrategy, timeline) {
+
   const startSemitones = resolveChordDegree(startDegree, timeline.key);
   const targetSemitones = resolveChordDegree(targetDegree, timeline.key);
+  
   
   // Calculate total distance
   let totalDistance;
@@ -123,6 +129,7 @@ function generateWalkSteps(startDegree, targetDegree, numSteps, direction, genre
   const steps = [];
   const stepSize = totalDistance / (numSteps + 1); // +1 because we have approach tone before target
   
+
   for (let i = 1; i <= numSteps; i++) {
     let stepSemitones;
     if (direction === "up") {
@@ -190,7 +197,7 @@ function snapToScaleDegree(semitones, key) {
       nearest = degree;
     }
   }
-  
+  console.log(semitones, "snapped to", nearest);
   return nearest;
 }
 

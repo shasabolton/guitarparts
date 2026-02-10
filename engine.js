@@ -169,9 +169,30 @@ function semitonesToScaleDegree(semitones) {
 // 5. Pitch Reference Resolution
 // ============================================================================
 
+function parseScaleDegree(degreeString) {
+  // Match patterns like "I", "I+1", "I-1", "II+2", etc.
+  const match = degreeString.match(/^([IV]+)([+-]?\d+)?$/);
+  if (!match) {
+    // Fallback to simple lookup
+    return DEGREE_TO_SEMITONES[degreeString] || 0;
+  }
+  
+  const baseDegree = match[1];
+  const offset = match[2] ? parseInt(match[2], 10) : 0;
+  const baseSemitones = DEGREE_TO_SEMITONES[baseDegree] || 0;
+  return (baseSemitones + offset + 12) % 12;
+}
+
 function resolvePitchRef(pitchRef, context) {
   const { basis, offset, degreeHint } = pitchRef;
   const { timeline, currentChordIndex, currentBeat, nextChordIndex } = context;
+
+  // If degreeHint is provided, use it as a scale degree relative to key root
+  // This takes precedence over the basis logic
+  if (degreeHint) {
+    const degreeSemitones = parseScaleDegree(degreeHint);
+    return (degreeSemitones + offset + 12) % 12;
+  }
 
   let baseSemitones = 0;
 
@@ -441,6 +462,29 @@ function executePipeline(progression, parts, appliedRules) {
       // Determine register
       const register = resolveRegister(appliedRule, part, rule);
 
+      // For bar-specific rules, remove existing events in that bar before applying new rule
+      // This ensures target anchors from previous walks are removed when a new walk is applied
+      if (appliedRule.slot.type === "bar" && appliedRule.slot.index !== undefined) {
+        const bar = timeline.bars[appliedRule.slot.index];
+        if (bar) {
+          const barStartBeat = bar.startBeat;
+          const barEndBeat = barStartBeat + 3; // 4 beats per bar
+          // Remove events that fall within this bar
+          for (let i = partEvents.length - 1; i >= 0; i--) {
+            const event = partEvents[i];
+            const eventEndBeat = event.startBeat + event.duration - 1;
+            // Check if event overlaps with this bar
+            if (event.startBeat <= barEndBeat && eventEndBeat >= barStartBeat) {
+              partEvents.splice(i, 1);
+              // Also remove from beat coverage
+              for (let beat = event.startBeat; beat <= eventEndBeat; beat++) {
+                beatCoverage.delete(beat);
+              }
+            }
+          }
+        }
+      }
+
       // For global rules, apply to each bar
       if (specificity === 0 && appliedRule.slot.type === "global") {
         // Apply the riff to each bar in the timeline
@@ -462,11 +506,13 @@ function executePipeline(progression, parts, appliedRules) {
           if (ruleApp.isWalkRule) {
             const parameters = appliedRule.parameters || getDefaultWalkParameters(rule);
             const resolvedWalk = resolveWalkRule(rule, parameters, context);
-            instantiatedEvents = instantiateRiff(resolvedWalk, barStartBeat, context);
+            //console.log("resolvedWalk", resolvedWalk);
+            // Walk rules already have absolute beats, so use events directly
+            instantiatedEvents = resolvedWalk.events;
           } else {
             instantiatedEvents = instantiateRiff(riff, barStartBeat, context);
           }
-
+          console.log("instantiatedEvents", instantiatedEvents);
           // Resolve each event
           for (const paramEvent of instantiatedEvents) {
             const eventBeat = paramEvent.startBeat;
@@ -529,10 +575,14 @@ function executePipeline(progression, parts, appliedRules) {
         if (ruleApp.isWalkRule) {
           const parameters = appliedRule.parameters || getDefaultWalkParameters(rule);
           const resolvedWalk = resolveWalkRule(rule, parameters, context);
-          instantiatedEvents = instantiateRiff(resolvedWalk, startBeat, context);
+          console.log("resolvedWalk", resolvedWalk);
+          // Walk rules already have absolute beats, so use events directly
+          instantiatedEvents = resolvedWalk.events;
         } else {
           instantiatedEvents = instantiateRiff(riff, startBeat, context);
         }
+        console.log("instantiatedEvents", instantiatedEvents);
+        
 
         // Resolve each event, but only if the beat isn't already covered by a more specific rule
         for (const paramEvent of instantiatedEvents) {
